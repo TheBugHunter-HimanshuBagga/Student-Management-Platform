@@ -169,6 +169,70 @@ public class StudentServiceImplTest {
 
     }
 
+    @Test
+    void getStudentById_shouldThrowExceptionWhenNotFound(){
 
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // ACT  + Assert
+        assertThrows(RuntimeException.class, () -> {
+            studentService.getStudentById(1L);
+        });
+
+        // verify
+        verify(studentRepository, times(1)).findById(1L);
+
+        verify(modelMapper, never()).map(any(), eq(StudentResponseDTO.class));
+
+    }
+
+    @Test
+    void updateStudent_shouldReturnUpdatedStudent(){
+        Student existing = new Student(
+                1L,
+                "Himanshu",
+                "old@gmail.com",
+                19,
+                "ECE"
+        );
+
+        StudentRequestDTO requestDTO = new StudentRequestDTO();
+        requestDTO.setName("Himanshu Bagga");
+        requestDTO.setEmail("new@gmail.com");
+        requestDTO.setAge(20);
+        requestDTO.setCourse("CSE");
+
+        StudentResponseDTO responseDTO = new StudentResponseDTO(
+                1L,
+                "Himanshu Bagga",
+                "new@gmail.com",
+                20,
+                "CSE"
+        );
+
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(existing));
+
+        when(studentRepository.save(any(Student.class))).thenReturn(existing);
+
+        when(modelMapper.map(existing, StudentResponseDTO.class)).thenReturn(responseDTO);
+
+        // ACT
+        StudentResponseDTO result = studentService.updateStudent(1L, requestDTO);
+
+        // ASSERT
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Himanshu Bagga", result.getName());
+        assertEquals("new@gmail.com", result.getEmail());
+        assertEquals(20, result.getAge());
+        assertEquals("CSE", result.getCourse());
+
+        // Verify
+        verify(studentRepository, times(1)).findById(1L);
+
+        verify(studentRepository, times(1)).save(existing);
+
+        verify(modelMapper, times(1)).map(existing, StudentResponseDTO.class);
+    }
 
 }
