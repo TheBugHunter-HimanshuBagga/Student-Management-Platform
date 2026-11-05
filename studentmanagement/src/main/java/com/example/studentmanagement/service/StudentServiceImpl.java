@@ -8,7 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor // for constructor injection
 public class StudentServiceImpl implements StudentService{ // Business Logic
@@ -18,21 +23,21 @@ public class StudentServiceImpl implements StudentService{ // Business Logic
 
     @Override
     public StudentResponseDTO createStudent(StudentRequestDTO request){
-        Student student = new Student();
+        Student student = new Student(); // DTO return ->
 
         student.setName(request.getName());
         student.setAge(request.getAge());
         student.setEmail(request.getEmail());
         student.setCourse(request.getCourse());
 
-        Student savedStudent = studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student); // Entity
 
-        return modelMapper.map(savedStudent, StudentResponseDTO.class);
+        return modelMapper.map(savedStudent, StudentResponseDTO.class); // eNTITY - DTO
     }
 
     @Override
     public List<StudentResponseDTO> getAllStudents() {
-        List<Student> students = studentRepository.findAll();
+        List<Student> students = studentRepository.findAll(); // entity (service) -z repo
         return students.stream()
                 .map(student -> modelMapper.map(student, StudentResponseDTO.class))
                 .toList();
@@ -43,7 +48,7 @@ public class StudentServiceImpl implements StudentService{ // Business Logic
         Student student = studentRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Student not found with ID: " + id)
         );
-        return modelMapper.map(student, StudentResponseDTO.class);
+        return modelMapper.map(student, StudentResponseDTO.class);// entity -> dto
     }
 
     @Override

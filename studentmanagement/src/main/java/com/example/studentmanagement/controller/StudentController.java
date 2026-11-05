@@ -13,8 +13,9 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/students")
+@RequestMapping("/api/students")// loclhost 8080/api/students
 public class StudentController {
+
     private final StudentService studentService;
 
     // Add student
@@ -34,7 +35,7 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id){
         StudentResponseDTO response = studentService.getStudentById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);// 200 , 404 NOT FOUND , 201 CREATED , 403 AUTHNTOICATION ERROR , 500 INTERNAL SERVER ERROR
     }
 
     @PutMapping("{id}")

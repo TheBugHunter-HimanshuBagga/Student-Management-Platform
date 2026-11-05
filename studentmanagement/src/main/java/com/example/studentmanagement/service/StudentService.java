@@ -2,6 +2,7 @@ package com.example.studentmanagement.service;
 
 import com.example.studentmanagement.dto.StudentRequestDTO;
 import com.example.studentmanagement.dto.StudentResponseDTO;
+import com.example.studentmanagement.entity.Student;
 
 import java.util.List;
 

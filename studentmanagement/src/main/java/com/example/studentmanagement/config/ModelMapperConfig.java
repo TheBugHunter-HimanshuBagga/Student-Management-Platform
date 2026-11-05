@@ -12,3 +12,5 @@ public class ModelMapperConfig { // converts DTO- Entity and Entity - DTO
         return new ModelMapper();
     }
 }
+
+// modelmapper and mapstruct
