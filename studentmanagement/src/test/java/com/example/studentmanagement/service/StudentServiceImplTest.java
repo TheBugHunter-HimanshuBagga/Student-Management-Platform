@@ -235,4 +235,51 @@ public class StudentServiceImplTest {
         verify(modelMapper, times(1)).map(existing, StudentResponseDTO.class);
     }
 
+    @Test
+    void updateStudent_shouldThrowExceptionWhenNotFound(){
+
+        StudentRequestDTO requestDTO = new StudentRequestDTO();
+        requestDTO.setName("Himanshu Bagga");
+        requestDTO.setEmail("new@gmail.com");
+        requestDTO.setAge(20);
+        requestDTO.setCourse("CSE");
+
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // ACT + ASSERT
+        RuntimeException exception = assertThrows(
+                RuntimeException.class, () -> studentService.updateStudent(1L, requestDTO)
+        );
+
+        assertNotNull(exception);
+
+        // Verify
+        verify(studentRepository, times(1)).findById(1L);
+
+        verify(studentRepository, never()).save(any(Student.class));
+
+        verify(modelMapper, never()).map(any() , eq(StudentResponseDTO.class));
+    }
+
+    @Test
+    void deleteStudent_shouldDeleteStudentWhenExists(){
+        Student existing = new Student(
+                1L,
+                "Himanshu",
+                "old@gmail.com",
+                19,
+                "ECE"
+        );
+
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(existing));
+
+        // ACT
+        studentService.deleteStudent(1L);
+
+        verify(studentRepository, times(1)).findById(1L);
+        verify(studentRepository, times(1)).deleteById(1L);;
+
+
+    }
+
 }
